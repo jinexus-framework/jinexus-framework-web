@@ -1,0 +1,306 @@
+<main class="bd-masthead keep-calm-and-code-on" id="content" role="main">
+    <?php echo $this->render('layout/partial/fork-me-on-github-ribbon'); ?>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 col-md-12 mx-auto my-5">
+                <h1 class="mb-3 text-light text-center text-shadow">Documentation</h1>
+            </div>
+        </div>
+    </div>
+    <div class="cover-scrollspy"><i class="fas fa-chevron-down"></i></div>
+</main>
+<div class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <?php echo $this->render('application/documentation/partial/main-sidebar'); ?>
+        <div class="d-none d-xl-block col-xl-2 bd-toc">
+            <ul class="section-nav">
+                <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.http'); ?>#parameter-bags">Parameter Bags</a></li>
+                <li class="toc-entry toc-h2">
+                    <a href="<?php echo $this->url('application.documentation.walkthrough.http'); ?>#data-access">Data Access</a>
+                    <ul>
+                        <li class="toc-entry toc-h3"><a href="<?php echo $this->url('application.documentation.walkthrough.http'); ?>#query-data">GET / Query String</a></li>
+                        <li class="toc-entry toc-h3"><a href="<?php echo $this->url('application.documentation.walkthrough.http'); ?>#post-data">POST Data</a></li>
+                        <li class="toc-entry toc-h3"><a href="<?php echo $this->url('application.documentation.walkthrough.http'); ?>#cookie-data">Cookie Data</a></li>
+                        <li class="toc-entry toc-h3"><a href="<?php echo $this->url('application.documentation.walkthrough.http'); ?>#file-data">File Data</a></li>
+                        <li class="toc-entry toc-h3"><a href="<?php echo $this->url('application.documentation.walkthrough.http'); ?>#server-data">Server Data</a></li>
+                    </ul>
+                </li>
+                <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.http'); ?>#parameter-methods">Parameter Methods</a></li>
+                <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.http'); ?>#request-helpers">Request Helpers</a></li>
+                <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.http'); ?>#http-container">HTTP Container</a></li>
+            </ul>
+        </div>
+        <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" role="main">
+            <h1 class="bd-title" id="content">HTTP</h1>
+            <p class="bd-lead">
+                The HTTP component wraps PHP's request super-globals — <code>$_GET</code>,
+                <code>$_POST</code>, <code>$_FILES</code>, <code>$_COOKIE</code>, and
+                <code>$_SERVER</code> — into an object-oriented interface. Each bag is exposed
+                as a read-only property hook on the <code>Request</code> object, and the
+                <code>Http</code> container holds the request together with convenience helpers.
+            </p>
+
+            <p>
+                In a controller (<code>AbstractController</code>), the current request is
+                available directly as <code>$this->request</code>, or via the HTTP container
+                as <code>$this->http->request</code>.
+            </p>
+
+            <h2 id="parameter-bags">Parameter Bags</h2>
+            <p>
+                The <code>Request</code> provides five <code>Parameter</code> bags as public
+                read-only properties. Each bag is a <code>Parameter</code> value object that
+                implements <code>Countable</code> and <code>IteratorAggregate</code>:
+            </p>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Source</th>
+                            <th>Super-global Fallback</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>$request->query</code></td>
+                            <td><code>'get'</code> key of the injected array</td>
+                            <td><code>$_GET</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>$request->post</code></td>
+                            <td><code>'post'</code> key of the injected array</td>
+                            <td><code>$_POST</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>$request->cookie</code></td>
+                            <td><code>'cookie'</code> key of the injected array</td>
+                            <td><code>$_COOKIE</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>$request->file</code></td>
+                            <td><code>'file'</code> key of the injected array</td>
+                            <td><code>$_FILES</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>$request->server</code></td>
+                            <td><code>'server'</code> key of the injected array</td>
+                            <td><code>$_SERVER</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2 id="data-access">Data Access</h2>
+            <p>
+                Data is injected at construction and falls back to the super-globals when a key
+                is omitted, so the component is easy to test and does not read global state once
+                you pass it an explicit request array.
+            </p>
+
+            <h3 id="query-data">GET Data (Query String)</h3>
+            <p>The <code>$request->query</code> bag returns query string data from the
+            <code>'get'</code> key (or <code>$_GET</code>):</p>
+            <figure class="highlight">
+                <pre>
+    <code class="language-php" data-lang="php">
+
+    <span class="ni">// In a controller action:</span>
+    <span class="nd">$page</span> <span class="o">=</span> <span class="nd">$this</span><span class="o">-></span><span class="nd">request</span><span class="o">-></span><span class="nd">query</span><span class="o">-></span><span class="ss">get</span><span class="o">(</span><span class="no">'page'</span><span class="o">);</span>         <span class="ni">// null if absent</span>
+    <span class="nd">$page</span> <span class="o">=</span> <span class="nd">$this</span><span class="o">-></span><span class="nd">request</span><span class="o">-></span><span class="nd">query</span><span class="o">-></span><span class="ss">get</span><span class="o">(</span><span class="no">'page'</span><span class="m">,</span> <span class="m">1</span><span class="o">);</span>      <span class="ni">// default to 1</span>
+    </code>
+                </pre>
+            </figure>
+
+            <h3 id="post-data">POST Data</h3>
+            <p>The <code>$request->post</code> bag returns POST data from the <code>'post'</code>
+            key (or <code>$_POST</code>):</p>
+            <figure class="highlight">
+                <pre>
+    <code class="language-php" data-lang="php">
+
+    <span class="nd">$name</span> <span class="o">=</span> <span class="nd">$this</span><span class="o">-></span><span class="nd">request</span><span class="o">-></span><span class="nd">post</span><span class="o">-></span><span class="ss">get</span><span class="o">(</span><span class="no">'name'</span><span class="o">);</span>            <span class="ni">// null if absent</span>
+    <span class="nd">$name</span> <span class="o">=</span> <span class="nd">$this</span><span class="o">-></span><span class="nd">request</span><span class="o">-></span><span class="nd">post</span><span class="o">-></span><span class="ss">get</span><span class="o">(</span><span class="no">'name'</span><span class="m">,</span> <span class="no">'guest'</span><span class="o">);</span>   <span class="ni">// default to 'guest'</span>
+    </code>
+                </pre>
+            </figure>
+
+            <h3 id="cookie-data">Cookie Data</h3>
+            <p>The <code>$request->cookie</code> bag returns cookie data from the
+            <code>'cookie'</code> key (or <code>$_COOKIE</code>):</p>
+            <figure class="highlight">
+                <pre>
+    <code class="language-php" data-lang="php">
+
+    <span class="nd">$sessionId</span> <span class="o">=</span> <span class="nd">$this</span><span class="o">-></span><span class="nd">request</span><span class="o">-></span><span class="nd">cookie</span><span class="o">-></span><span class="ss">get</span><span class="o">(</span><span class="no">'PHPSESSID'</span><span class="o">);</span>
+    </code>
+                </pre>
+            </figure>
+
+            <h3 id="file-data">File Data</h3>
+            <p>The <code>$request->file</code> bag returns file data from the <code>'file'</code>
+            key (or <code>$_FILES</code>):</p>
+            <figure class="highlight">
+                <pre>
+    <code class="language-php" data-lang="php">
+
+    <span class="nd">$upload</span> <span class="o">=</span> <span class="nd">$this</span><span class="o">-></span><span class="nd">request</span><span class="o">-></span><span class="nd">file</span><span class="o">-></span><span class="ss">get</span><span class="o">(</span><span class="no">'upload'</span><span class="o">);</span>
+    </code>
+                </pre>
+            </figure>
+
+            <h3 id="server-data">Server Data</h3>
+            <p>The <code>$request->server</code> bag returns server data from the
+            <code>'server'</code> key (or <code>$_SERVER</code>):</p>
+            <figure class="highlight">
+                <pre>
+    <code class="language-php" data-lang="php">
+
+    <span class="nd">$method</span> <span class="o">=</span> <span class="nd">$this</span><span class="o">-></span><span class="nd">request</span><span class="o">-></span><span class="nd">server</span><span class="o">-></span><span class="ss">get</span><span class="o">(</span><span class="no">'REQUEST_METHOD'</span><span class="o">);</span>
+    <span class="nd">$agent</span>  <span class="o">=</span> <span class="nd">$this</span><span class="o">-></span><span class="nd">request</span><span class="o">-></span><span class="nd">server</span><span class="o">-></span><span class="ss">get</span><span class="o">(</span><span class="no">'HTTP_USER_AGENT'</span><span class="o">);</span>
+    </code>
+                </pre>
+            </figure>
+
+            <h2 id="parameter-methods">Parameter Methods</h2>
+            <p>Every <code>Parameter</code> bag supports the following methods:</p>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>get($key, $default = null)</code></td>
+                            <td>Gets a parameter value, or <code>$default</code> if absent</td>
+                        </tr>
+                        <tr>
+                            <td><code>has($key)</code></td>
+                            <td>Returns <code>true</code> if the key exists, <code>false</code> otherwise</td>
+                        </tr>
+                        <tr>
+                            <td><code>add(array $parameter)</code></td>
+                            <td>Merges an associative array into the bag</td>
+                        </tr>
+                        <tr>
+                            <td><code>remove($key)</code></td>
+                            <td>Removes a parameter by key</td>
+                        </tr>
+                        <tr>
+                            <td><code>all()</code></td>
+                            <td>Returns all parameters as an associative array</td>
+                        </tr>
+                        <tr>
+                            <td><code>count()</code></td>
+                            <td>Returns the number of parameters (implements <code>Countable</code>)</td>
+                        </tr>
+                        <tr>
+                            <td><code>getIterator()</code></td>
+                            <td>Returns an <code>ArrayIterator</code> (implements <code>IteratorAggregate</code>)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <figure class="highlight">
+                <pre>
+    <code class="language-php" data-lang="php">
+
+    <span class="ni">// Check if a key exists</span>
+    <span class="m">if</span> <span class="o">(</span><span class="nd">$this</span><span class="o">-></span><span class="nd">request</span><span class="o">-></span><span class="nd">query</span><span class="o">-></span><span class="ss">has</span><span class="o">(</span><span class="no">'token'</span><span class="o">))</span> <span class="o">{</span>
+        <span class="ni">// ...</span>
+    <span class="o">}</span>
+
+    <span class="ni">// Iterate over server variables</span>
+    <span class="m">foreach</span> <span class="o">(</span><span class="nd">$this</span><span class="o">-></span><span class="nd">request</span><span class="o">-></span><span class="nd">server</span> <span class="m">as</span> <span class="nd">$key</span> <span class="m">=&gt;</span> <span class="nd">$value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="ni">// ...</span>
+    <span class="o">}</span>
+    </code>
+                </pre>
+            </figure>
+
+            <h2 id="request-helpers">Request Helpers</h2>
+            <p>The <code>Request</code> object also provides several convenience methods:</p>
+
+            <h4>Ajax Detection</h4>
+            <p><code>isAjax()</code> returns <code>true</code> when the
+            <code>X-Requested-With</code> header equals <code>XMLHttpRequest</code>:</p>
+            <figure class="highlight">
+                <pre>
+    <code class="language-php" data-lang="php">
+
+    <span class="m">if</span> <span class="o">(</span><span class="nd">$this</span><span class="o">-></span><span class="nd">request</span><span class="o">-></span><span class="ss">isAjax</span><span class="o">())</span> <span class="o">{</span>
+        <span class="ni">// Return JSON instead of rendering the layout</span>
+    <span class="o">}</span>
+    </code>
+                </pre>
+            </figure>
+
+            <h4>Secure Request Detection</h4>
+            <p><code>isSecure()</code> returns <code>true</code> when the request was made
+            over HTTPS:</p>
+            <figure class="highlight">
+                <pre>
+    <code class="language-php" data-lang="php">
+
+    <span class="m">if</span> <span class="o">(</span><span class="nd">$this</span><span class="o">-></span><span class="nd">request</span><span class="o">-></span><span class="ss">isSecure</span><span class="o">())</span> <span class="o">{</span>
+        <span class="ni">// Enforce HTTPS</span>
+    <span class="o">}</span>
+    </code>
+                </pre>
+            </figure>
+
+            <h4>Base URL</h4>
+            <p><code>baseUrl()</code> returns the full base URL (protocol, host, and path up
+            to the front controller directory):</p>
+            <figure class="highlight">
+                <pre>
+    <code class="language-php" data-lang="php">
+
+    <span class="nd">$baseUrl</span> <span class="o">=</span> <span class="nd">$this</span><span class="o">-></span><span class="nd">request</span><span class="o">-></span><span class="ss">baseUrl</span><span class="o">();</span>
+    <span class="ni">// e.g. "https://example.com/my-app"</span>
+    </code>
+                </pre>
+            </figure>
+
+            <h2 id="http-container">The HTTP Container</h2>
+            <p>
+                The <code>Http</code> object wraps the request and is available on the
+                application as <code>$app->http</code> and on controllers as
+                <code>$this->http</code>. In the rare case you need to access it directly:
+            </p>
+            <figure class="highlight">
+                <pre>
+    <code class="language-php" data-lang="php">
+
+    <span class="nd">$request</span> <span class="o">=</span> <span class="nd">$this</span><span class="o">-></span><span class="nd">http</span><span class="o">-></span><span class="nd">request</span><span class="m">;</span>  <span class="ni">// same as $this->request</span>
+    </code>
+                </pre>
+            </figure>
+
+            <?php echo $this->render('application/documentation/partial/note'); ?>
+
+            <hr>
+            <nav aria-label="Documentation Navigation">
+                <ul class="pagination d-inline-block float-left">
+                    <li class="page-item">
+                        <a class="page-link" href="<?php echo $this->url('application.documentation.walkthrough.route'); ?>" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span>Previous</span>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="pagination d-inline-block float-right">
+                    <li class="page-item">
+                        <a class="page-link" href="<?php echo $this->url('application.documentation.walkthrough.view'); ?>" aria-label="Next">
+                            <span>Next</span>
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </main>
+    </div>
+</div>

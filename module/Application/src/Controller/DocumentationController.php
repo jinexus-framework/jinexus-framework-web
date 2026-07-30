@@ -1,8 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Application\Controller;
 
 use JiNexus\Mvc\Controller\AbstractController;
 use JiNexus\Mvc\Model\ViewModel;
+use JiNexus\Route\RouteException;
 
 /**
  * Class DocumentationController
@@ -11,28 +15,28 @@ use JiNexus\Mvc\Model\ViewModel;
 class DocumentationController extends AbstractController
 {
     /**
-     * @throws \JiNexus\Route\Exception
+     * @throws RouteException
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         $this->redirect->toRoute('application.documentation.getting-started.introduction');
     }
 
     /**
-     * @throws \JiNexus\Route\Exception
+     * @throws RouteException
      */
-    public function gettingStartedAction()
+    public function gettingStartedAction(): void
     {
         $this->redirect->toRoute('application.documentation.getting-started.introduction');
     }
 
     /**
      * @return ViewModel
-     * @throws \JiNexus\Route\Exception
+     * @throws RouteException
      */
-    public function gettingStartedIntroductionAction()
+    public function gettingStartedIntroductionAction(): ViewModel
     {
-        $request = $this->http->getRequest();
+        $request = $this->request;
 
         return new ViewModel([
             'title' => 'Documentation - JiNexus Framework',
@@ -52,11 +56,11 @@ class DocumentationController extends AbstractController
 
     /**
      * @return ViewModel
-     * @throws \JiNexus\Route\Exception
+     * @throws RouteException
      */
-    public function gettingStartedInstallationAction()
+    public function gettingStartedInstallationAction(): ViewModel
     {
-        $request = $this->http->getRequest();
+        $request = $this->request;
 
         return new ViewModel([
             'title' => 'Documentation - JiNexus Framework',
@@ -75,20 +79,20 @@ class DocumentationController extends AbstractController
     }
 
     /**
-     * @throws \JiNexus\Route\Exception
+     * @throws RouteException
      */
-    public function walkthroughAction()
+    public function walkthroughAction(): void
     {
         $this->redirect->toRoute('application.documentation.walkthrough.introduction');
     }
 
     /**
      * @return ViewModel
-     * @throws \JiNexus\Route\Exception
+     * @throws RouteException
      */
-    public function walkthroughIntroductionAction()
+    public function walkthroughIntroductionAction(): ViewModel
     {
-        $request = $this->http->getRequest();
+        $request = $this->request;
 
         return new ViewModel([
             'title' => 'Documentation - JiNexus Framework',
@@ -108,11 +112,11 @@ class DocumentationController extends AbstractController
 
     /**
      * @return ViewModel
-     * @throws \JiNexus\Route\Exception
+     * @throws RouteException
      */
-    public function walkthroughModuleManagerAction()
+    public function walkthroughModuleManagerAction(): ViewModel
     {
-        $request = $this->http->getRequest();
+        $request = $this->request;
 
         return new ViewModel([
             'title' => 'Documentation - JiNexus Framework',
@@ -132,11 +136,11 @@ class DocumentationController extends AbstractController
 
     /**
      * @return ViewModel
-     * @throws \JiNexus\Route\Exception
+     * @throws RouteException
      */
-    public function walkthroughControllerAction()
+    public function walkthroughControllerAction(): ViewModel
     {
-        $request = $this->http->getRequest();
+        $request = $this->request;
 
         return new ViewModel([
             'title' => 'Documentation - JiNexus Framework',
@@ -156,11 +160,11 @@ class DocumentationController extends AbstractController
 
     /**
      * @return ViewModel
-     * @throws \JiNexus\Route\Exception
+     * @throws RouteException
      */
-    public function walkthroughRouteAction()
+    public function walkthroughRouteAction(): ViewModel
     {
-        $request = $this->http->getRequest();
+        $request = $this->request;
 
         return new ViewModel([
             'title' => 'Documentation - JiNexus Framework',
@@ -180,35 +184,35 @@ class DocumentationController extends AbstractController
 
     /**
      * @return ViewModel
-     * @throws \JiNexus\Route\Exception
+     * @throws RouteException
      */
-    public function walkthroughHttpRequestAction()
+    public function walkthroughHttpAction(): ViewModel
     {
-        $request = $this->http->getRequest();
+        $request = $this->request;
 
         return new ViewModel([
             'title' => 'Documentation - JiNexus Framework',
             'meta' => [
                 'description' => 'A modular, lightweight and easy to use PHP framework and probably the smallest and fastest MVC framework',
                 'og' => [
-                    'url' => $request->baseUrl() . $this->view->url('application.documentation.walkthrough.http-request'),
+                    'url' => $request->baseUrl() . $this->view->url('application.documentation.walkthrough.http'),
                     'description' => 'Go and get started to explore our docs',
                     'image' => $request->baseUrl() . $this->view->basePath('asset/img/cover-photo/jinexus-framework-documentation-cover.png'),
                 ],
             ],
             'mainSidebar' => [
-                'active' => ['walkthrough', 'http-request'],
+                'active' => ['walkthrough', 'http'],
             ]
         ]);
     }
 
     /**
      * @return ViewModel
-     * @throws \JiNexus\Route\Exception
+     * @throws RouteException
      */
-    public function walkthroughViewAction()
+    public function walkthroughViewAction(): ViewModel
     {
-        $request = $this->http->getRequest();
+        $request = $this->request;
 
         return new ViewModel([
             'title' => 'Documentation - JiNexus Framework',
@@ -228,11 +232,11 @@ class DocumentationController extends AbstractController
 
     /**
      * @return ViewModel
-     * @throws \JiNexus\Route\Exception
+     * @throws RouteException
      */
-    public function walkthroughConfigAction()
+    public function walkthroughConfigAction(): ViewModel
     {
-        $request = $this->http->getRequest();
+        $request = $this->request;
 
         return new ViewModel([
             'title' => 'Documentation - JiNexus Framework',

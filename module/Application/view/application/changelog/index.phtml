@@ -1,4 +1,5 @@
 <main class="bd-masthead code-on-laptop" id="content" role="main">
+    <?php echo $this->render('layout/partial/fork-me-on-github-ribbon'); ?>
     <div class="container">
         <div class="row align-items-center">
             <div class="col-12 col-md-12 mx-auto my-5">
@@ -11,8 +12,45 @@
 <div class="masthead-followup row m-0 border border-white">
     <div class="col-12 col-md-12 p-5 bg-light border border-white">
         <div class="container">
-            <div class="border-bottom">
-                <h2 class="text-primary mb-4">1.0.0 <small>(2018-07-21)</small></h2>
+            <div class="border-bottom py-4">
+                <h2 class="text-primary mb-4">v1.1.0 <small>(2026-07-30)</small></h2>
+                <h4>Added</h4>
+                <ul>
+                    <li class="lead mb2"><strong>jinexus-config:</strong> <code>AbstractConfig</code> accessors — <code>get()</code> (with default), <code>set()</code> (fluent), <code>has()</code>, <code>getConfig()</code>, and <code>setConfig()</code>. Magic property access via <code>__get()</code>/<code>__set()</code>. <code>ConfigFactory::build()</code>. <code>ConfigException</code> and interfaces (<code>ConfigInterface</code>, <code>BaseInterface</code>, <code>FactoryInterface</code>). PHPUnit 13 test suite, GitHub Actions CI, <code>AGENTS.md</code>.</li>
+                    <li class="lead mb2"><strong>jinexus-http:</strong> <code>Request</code>/<code>AbstractRequest</code> with five <code>Parameter</code> bags (cookie, file, post, query, server). Request helpers: <code>isAjax()</code>, <code>isSecure()</code>, <code>baseUrl()</code>. <code>Parameter</code> value object implementing <code>Countable</code> and <code>IteratorAggregate</code>. <code>File</code>/<code>UploadFile</code> markers. <code>Http</code>/<code>AbstractHttp</code> container. <code>HttpFactory::build()</code> and <code>RequestFactory::build()</code>. <code>HttpException</code> and interfaces. Reflection-based magic getters/setters via <code>AbstractBase::__call()</code>. PHPUnit 13 test suite, CI workflow, <code>AGENTS.md</code>.</li>
+                    <li class="lead mb2"><strong>jinexus-route:</strong> <code>Route</code>/<code>AbstractRoute</code> with name-keyed route table. <code>getMatchRoute()</code> URI resolution, <code>getRouteUri()</code> name-to-URI resolution, <code>getUri()</code> deriving the request URI from <code>$_SERVER</code>. <code>Redirect</code>/<code>AbstractRedirect</code> sending <code>Location</code> headers for named routes. Three <code>protected</code> seams (<code>headersSent()</code>, <code>sendHeader()</code>, <code>terminate()</code>) for testable redirects. <code>RouteFactory::build()</code> and <code>RedirectFactory::build()</code>. <code>RouteException</code> and interfaces. 52 PHPUnit 13 tests at 100% coverage, CI workflow, <code>AGENTS.md</code>.</li>
+                    <li class="lead mb2"><strong>jinexus-module-manager:</strong> <code>ModuleManager</code>/<code>AbstractModuleManager</code> registry with <code>getModules()</code>, <code>setModules()</code>, <code>addModule()</code>, and <code>getConfig()</code>. Convention-based module resolution (appends <code>\Module</code> to namespace). <code>addModule()</code> deduplication returning <code>bool</code>. <code>AbstractModule</code>/<code>ModuleInterface</code> base contract. <code>ModuleManagerFactory::build()</code>. <code>ModuleManagerException</code>. 30 PHPUnit 13 tests, CI workflow, <code>AGENTS.md</code>.</li>
+                    <li class="lead mb2"><strong>jinexus-mvc:</strong> <code>Application</code>/<code>AbstractApplication</code> orchestrating the MVC pipeline with PHP 8.5 property hooks. <code>Controller</code>/<code>AbstractController</code> providing view, HTTP, request, and redirect access. <code>View</code>/<code>AbstractView</code> variable bag with PHTML rendering via <code>render()</code>. <code>ViewModel</code> value object. <code>ApplicationFactory::build()</code> wiring Whoops, module config, route matching, and HTTP. <code>ControllerFactory::build()</code> resolving controllers from route namespaces. <code>ViewFactory::build()</code>. <code>MvcException</code>. 404 response path with termination. 58 PHPUnit 13 tests at 100% coverage, <code>AGENTS.md</code>.</li>
+                    <li class="lead mb2"><strong>jinexus-framework-skeleton:</strong> PHP 8.5 support with <code>declare(strict_types=1)</code>. <code>Application\Module</code> extending <code>AbstractModule</code>. <code>IndexController</code> with default <code>indexAction()</code>. Application route (<code>application.home</code>). View templates (layout, index, error pages). PHPUnit 13 tests covering <code>Module</code> and <code>IndexController</code> at 100% coverage. <code>composer serve</code> script, <code>AGENTS.md</code>.</li>
+                </ul>
+                <h4>Changed</h4>
+                <ul>
+                    <li class="lead mb2">All packages raised the minimum PHP requirement to <code>^8.5</code> and use PHP 8.5 property hooks where applicable.</li>
+                    <li class="lead mb2"><strong>jinexus-route:</strong> Renamed exception from <code>Exception</code> to <code>RouteException</code>. <code>AbstractRedirect::toRoute()</code> now delegates to <code>headersSent()</code>, <code>sendHeader()</code>, and <code>terminate()</code> seams.</li>
+                    <li class="lead mb2"><strong>jinexus-module-manager (BREAKING):</strong> Renamed <code>Exception</code> to <code>ModuleManagerException</code>. Added parameter and return type declarations across the public API. Changed <code>autoload-dev</code> PSR-4 prefix to separate test namespace. All sources now declare <code>strict_types=1</code>.</li>
+                    <li class="lead mb2"><strong>jinexus-mvc:</strong> Extracted <code>exit()</code> into a <code>terminate()</code> method for testable 404 handling.</li>
+                    <li class="lead mb2"><strong>jinexus-framework-skeleton:</strong> Updated <code>branch-alias</code> to <code>dev-main: 1.1.x-dev</code>. Test location moved from <code>module/Application/test/</code> to <code>test/Application/</code>.</li>
+                </ul>
+                <h4>Deprecated</h4>
+                <ul>
+                    <li class="lead mb2">Nothing.</li>
+                </ul>
+                <h4>Removed</h4>
+                <ul>
+                    <li class="lead mb2"><strong>jinexus-config:</strong> Constructor no longer accepts configuration data as an array argument. Populate a <code>Config</code> instance with <code>setConfig()</code> or <code>set()</code> instead.</li>
+                    <li class="lead mb2"><strong>jinexus-module-manager (BREAKING):</strong> <code>JiNexus\ModuleManager\Exception</code> — replaced by <code>ModuleManagerException</code> with no alias provided.</li>
+                </ul>
+                <h4>Fixed</h4>
+                <ul>
+                    <li class="lead mb2"><strong>jinexus-route:</strong> <code>getMatchRoute()</code> now honors its <code>$routes</code> argument (previously silently ignored it). <code>getRouteUri()</code> now falls back to registered routes when no <code>$routes</code> argument is supplied (previously always threw). Autoload-dev PSR-4 map collision fixed.</li>
+                    <li class="lead mb2"><strong>jinexus-module-manager:</strong> An unresolvable module namespace no longer surfaces as a raw PHP <code>Error</code> — <code>getConfig()</code> now wraps it in a <code>ModuleManagerException</code>.</li>
+                    <li class="lead mb2"><strong>jinexus-framework-skeleton:</strong> <code>Application\Module::getConfig()</code> return type corrected from <code>mixed</code> to <code>array</code> to match the parent signature.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="container">
+            <div class="border-bottom py-4">
+                <h2 class="text-primary mb-4">v1.0.0 <small>(2018-07-21)</small></h2>
                 <h4>Added</h4>
                 <ul>
                     <li class="lead mb2">Nothing.</li>

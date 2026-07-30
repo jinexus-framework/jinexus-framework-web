@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Application;
 
 use Application\Controller\AboutController;
@@ -58,10 +61,10 @@ return [
             'controller' => DocumentationController::class,
             'action' => 'walkthroughRoute',
         ],
-        'application.documentation.walkthrough.http-request' => [
-            'route' => '/documentation/walkthrough/http-request',
+        'application.documentation.walkthrough.http' => [
+            'route' => '/documentation/walkthrough/http',
             'controller' => DocumentationController::class,
-            'action' => 'walkthroughHttpRequest',
+            'action' => 'walkthroughHttp',
         ],
         'application.documentation.walkthrough.view' => [
             'route' => '/documentation/walkthrough/view',

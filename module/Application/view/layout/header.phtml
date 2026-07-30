@@ -1,3 +1,15 @@
+<?php
+$activeHeader = $_SERVER['REQUEST_URI'] ?? '/';
+if (str_starts_with($activeHeader, '/documentation')) {
+    $activeHeader = 'documentation';
+} elseif (str_starts_with($activeHeader, '/changelog')) {
+    $activeHeader = 'changelog';
+} elseif (str_starts_with($activeHeader, '/about')) {
+    $activeHeader = 'about';
+} else {
+    $activeHeader = 'home';
+}
+?>
 <header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
@@ -9,16 +21,16 @@
             </button>
             <div class="collapse navbar-collapse" id="navbar-main-content">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="<?php echo $this->url('application.home'); ?>" aria-label="Home">Home <span class="sr-only">(current)</span></a>
+                    <li class="nav-item<?php echo $activeHeader === 'home' ? ' active' : ''; ?>">
+                        <a class="nav-link" href="<?php echo $this->url('application.home'); ?>" aria-label="Home">Home</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item<?php echo $activeHeader === 'documentation' ? ' active' : ''; ?>">
                         <a class="nav-link" href="<?php echo $this->url('application.documentation.getting-started.introduction'); ?>" aria-label="Documentation">Documentation</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item<?php echo $activeHeader === 'changelog' ? ' active' : ''; ?>">
                         <a class="nav-link" href="<?php echo $this->url('application.changelog'); ?>" aria-label="Changelog">Changelog</a>
                     </li>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown<?php echo $activeHeader === 'about' ? ' active' : ''; ?>">
                         <a class="nav-link dropdown-toggle" href="javascript:void(0);" id="navbar-dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             About
                         </a>
@@ -33,13 +45,13 @@
                 </ul>
                 <ul class="navbar-nav ml-auto ">
                     <li class="nav-item">
-                        <a class="nav-link" href="javascript:void(0);" rel="noopener" aria-label="Version 1.0.0">Version 1.0.0</a>
+                        <a class="nav-link" href="javascript:void(0);" rel="noopener" aria-label="Version 1.1.0">Version 1.1.0</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="https://github.com/jinexus-framework" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
                     </li>
                     <li class="nav-item">
-                        <a href="https://github.com/jinexus-framework/jinexus-framework-skeleton/archive/master.zip" class="btn btn-outline-info" role="button">Download</a>
+                        <a href="https://github.com/jinexus-framework/jinexus-framework-skeleton/archive/main.zip" class="btn btn-outline-info" role="button">Download</a>
                     </li>
                 </ul>
             </div>

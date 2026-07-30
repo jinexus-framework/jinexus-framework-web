@@ -1,4 +1,5 @@
 <main class="bd-masthead keep-calm-and-code-on" id="content" role="main">
+    <?php echo $this->render('layout/partial/fork-me-on-github-ribbon'); ?>
     <div class="container">
         <div class="row align-items-center">
             <div class="col-12 col-md-12 mx-auto my-5">
@@ -13,52 +14,150 @@
         <?php echo $this->render('application/documentation/partial/main-sidebar'); ?>
         <div class="d-none d-xl-block col-xl-2 bd-toc">
             <ul class="section-nav">
-                <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.controller'); ?>#basic-example-of-controller">Basic Example of Controller</a></li>
+                <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.controller'); ?>#controller-properties">Controller Properties</a></li>
+                <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.controller'); ?>#basic-example-of-controller">Basic Example</a></li>
+                <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.controller'); ?>#action-naming">Action Naming</a></li>
+                <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.controller'); ?>#viewmodel">ViewModel</a></li>
+                <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.controller'); ?>#redirecting">Redirecting</a></li>
             </ul>
         </div>
         <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" role="main">
             <h1 class="bd-title" id="content">Controller</h1>
             <p class="bd-lead">
-                Controller is a main entry of a page, after routing.
+                Controllers are the entry point for each page request after routing. An action method
+                is called on the matched controller, and its return value — a <code>ViewModel</code>
+                or <code>void</code> — is passed to the view layer for rendering.
             </p>
 
-            <h2 id="basic-example-of-controller">Basic Example of Controller</h2>
-            <p>Here's a basic example of controller that extends the base controller that's included in the framework.</p>
+            <h2 id="controller-properties">Controller Properties</h2>
+            <p>
+                Controllers extending <code>AbstractController</code> have access to the following
+                properties, wired automatically from the application:
+            </p>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>$this->view</code></td>
+                            <td><code>ViewInterface</code></td>
+                            <td>The application's view variable bag</td>
+                        </tr>
+                        <tr>
+                            <td><code>$this->http</code></td>
+                            <td><code>HttpInterface</code></td>
+                            <td>The application's HTTP container</td>
+                        </tr>
+                        <tr>
+                            <td><code>$this->request</code></td>
+                            <td><code>RequestInterface</code></td>
+                            <td>The current HTTP request (from <code>$this->http->request</code>)</td>
+                        </tr>
+                        <tr>
+                            <td><code>$this->redirect</code></td>
+                            <td><code>RedirectInterface</code></td>
+                            <td>The route redirects helper for <code>Location</code> headers</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2 id="basic-example-of-controller">Basic Example</h2>
+            <p>
+                Here is the default <code>IndexController</code> that ships with the skeleton.
+                It extends <code>AbstractController</code> and returns a <code>ViewModel</code>
+                from its <code>indexAction()</code>:
+            </p>
             <figure class="highlight">
                 <pre>
     <code class="language-php" data-lang="php">
-    <span class="m">namespace</span> <span class="o">namespace Application\Controller</span><span class="m">;</span>
+
+    <span class="m">declare</span><span class="o">(</span><span class="m">strict_types</span><span class="o">=</span><span class="m">1</span><span class="o">);</span>
+
+    <span class="m">namespace</span> <span class="o">Application\Controller</span><span class="m">;</span>
 
     <span class="m">use</span> <span class="o">JiNexus\Mvc\Controller\AbstractController</span><span class="m">;</span>
     <span class="m">use</span> <span class="o">JiNexus\Mvc\Model\ViewModel</span><span class="m">;</span>
 
-    <span class="no"><i>/**</i></span>
-    <span class="no"><i> * Class IndexController</i></span>
-    <span class="no"><i> * <u>@package</u> Application\Controller</i></span>
-    <span class="no"><i> */</i></span>
     <span class="m">class</span> <span class="o">IndexController</span> <span class="m">extends</span> <span class="o">AbstractController</span>
     <span class="o">{</span>
-        <span class="no"><i>/**</i></span>
-        <span class="no"><i> * <u>@return</u> ViewModel</i></span>
-        <span class="no"><i> */</i></span>
-        <span class="m">public function</span> <span class="ss">indexAction</span><span class="o">()</span>
+        <span class="m">public function</span> <span class="ss">indexAction</span><span class="o">():</span> <span class="o">ViewModel</span>
         <span class="o">{</span>
-            <span class="ni">// Pass a variable to the view</span>
             <span class="m">return new</span> <span class="o">ViewModel([</span>
-                <span class="no">'foobar'</span> <span class="o">=></span> <span class="no">'Hello World!'</span>
-            <span class="o">])</span><span class="m">;</span>
+                <span class="no">'helloWorld'</span> <span class="m">=&gt;</span> <span class="no">'Hello World!'</span><span class="m">,</span>
+            <span class="o">]);</span>
         <span class="o">}</span>
     <span class="o">}</span>
     </code>
                 </pre>
             </figure>
 
-            <div class="alert alert-info" role="alert">
-                <h5 class="alert-heading">Important Note!</h5>
-                <p>
-                    Method names should have a suffix of a word "Action" to match it and dispatch.
-                </p>
-            </div>
+            <h2 id="action-naming">Action Naming Convention</h2>
+            <p>
+                Action methods must be suffixed with <code>Action</code>. The MVC pipeline strips
+                the suffix to determine the action name exposed to the view. For example:
+            </p>
+            <ul>
+                <li><code>indexAction()</code> → action name <code>index</code></li>
+                <li><code>viewAction()</code> → action name <code>view</code></li>
+                <li><code>editAction()</code> → action name <code>edit</code></li>
+            </ul>
+            <p>
+                The matched action name is available on the application as
+                <code>$app->actionName</code> (a read-only PHP 8.5 property hook).
+            </p>
+
+            <h2 id="viewmodel">Returning a ViewModel</h2>
+            <p>
+                An action returns a <code>ViewModel</code> to pass variables to the view template.
+                The constructor accepts an associative array; each key becomes a variable in the
+                rendered PHTML template:
+            </p>
+            <figure class="highlight">
+                <pre>
+    <code class="language-php" data-lang="php">
+
+    <span class="m">public function</span> <span class="ss">indexAction</span><span class="o">():</span> <span class="o">ViewModel</span>
+    <span class="o">{</span>
+        <span class="m">return new</span> <span class="o">ViewModel([</span>
+            <span class="no">'pageTitle'</span> <span class="m">=&gt;</span> <span class="no">'Welcome'</span><span class="m">,</span>
+            <span class="no">'items'</span>     <span class="m">=&gt;</span> <span class="o">[</span><span class="no">'one'</span><span class="m">,</span> <span class="no">'two'</span><span class="m">,</span> <span class="no">'three'</span><span class="o">],</span>
+        <span class="o">]);</span>
+    <span class="o">}</span>
+    </code>
+                </pre>
+            </figure>
+            <p>
+                If an action returns <code>void</code> (no explicit return), the view is still
+                rendered with whatever variables were set directly on <code>$this->view</code>.
+            </p>
+
+            <h2 id="redirecting">Redirecting from a Controller</h2>
+            <p>
+                Use the <code>$this->redirect</code> helper to send a <code>Location</code> header
+                to a named route. The request is terminated after the header is sent:
+            </p>
+            <figure class="highlight">
+                <pre>
+    <code class="language-php" data-lang="php">
+
+    <span class="m">public function</span> <span class="ss">dashboardAction</span><span class="o">():</span> <span class="m">void</span>
+    <span class="o">{</span>
+        <span class="ni">// 302 redirect to the "home" route</span>
+        <span class="m">$this->redirect->toRoute</span><span class="o">(</span><span class="no">'home'</span><span class="o">);</span>
+
+        <span class="ni">// 301 (permanent) redirect</span>
+        <span class="m">$this->redirect->toRoute</span><span class="o">(</span><span class="no">'home'</span><span class="m">,</span> <span class="m">true</span><span class="o">);</span>
+    <span class="o">}</span>
+    </code>
+                </pre>
+            </figure>
 
             <?php echo $this->render('application/documentation/partial/note'); ?>
 

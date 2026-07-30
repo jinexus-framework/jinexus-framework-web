@@ -1,8 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Application\Controller;
 
 use JiNexus\Mvc\Controller\AbstractController;
 use JiNexus\Mvc\Model\ViewModel;
+use JiNexus\Route\RouteException;
 
 /**
  * Class AboutController
@@ -11,20 +15,20 @@ use JiNexus\Mvc\Model\ViewModel;
 class AboutController extends AbstractController
 {
     /**
-     * @throws \JiNexus\Route\Exception
+     * @throws RouteException
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         $this->redirect->toRoute('application.about.author', true);
     }
 
     /**
      * @return ViewModel
-     * @throws \JiNexus\Route\Exception
+     * @throws RouteException
      */
-    public function authorAction()
+    public function authorAction(): ViewModel
     {
-        $request = $this->http->getRequest();
+        $request = $this->request;
 
         return new ViewModel([
             'title' => 'Author - JiNexus Framework',
@@ -41,11 +45,11 @@ class AboutController extends AbstractController
 
     /**
      * @return ViewModel
-     * @throws \JiNexus\Route\Exception
+     * @throws RouteException
      */
-    public function conductAction()
+    public function conductAction(): ViewModel
     {
-        $request = $this->http->getRequest();
+        $request = $this->request;
 
         return new ViewModel([
             'title' => 'Contributor Code of Conduct - JiNexus Framework',
@@ -62,11 +66,11 @@ class AboutController extends AbstractController
 
     /**
      * @return ViewModel
-     * @throws \JiNexus\Route\Exception
+     * @throws RouteException
      */
-    public function creditsAction()
+    public function creditsAction(): ViewModel
     {
-        $request = $this->http->getRequest();
+        $request = $this->request;
 
         return new ViewModel([
             'title' => 'Credits - JiNexus Framework',
@@ -83,11 +87,11 @@ class AboutController extends AbstractController
 
     /**
      * @return ViewModel
-     * @throws \JiNexus\Route\Exception
+     * @throws RouteException
      */
-    public function licenseAction()
+    public function licenseAction(): ViewModel
     {
-        $request = $this->http->getRequest();
+        $request = $this->request;
 
         return new ViewModel([
             'title' => 'License - JiNexus Framework',

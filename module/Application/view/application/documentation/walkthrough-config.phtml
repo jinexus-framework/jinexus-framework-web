@@ -1,4 +1,5 @@
 <main class="bd-masthead keep-calm-and-code-on" id="content" role="main">
+    <?php echo $this->render('layout/partial/fork-me-on-github-ribbon'); ?>
     <div class="container">
         <div class="row align-items-center">
             <div class="col-12 col-md-12 mx-auto my-5">
@@ -14,86 +15,207 @@
         <div class="d-none d-xl-block col-xl-2 bd-toc">
             <ul class="section-nav">
                 <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.config'); ?>#config-files">Config Files</a></li>
-                <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.config'); ?>#environment-config">Environment Config</a></li>
+                <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.config'); ?>#config-merge">Config Merge</a></li>
+                <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.config'); ?>#accessing-config">Accessing Config</a></li>
                 <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.config'); ?>#available-config-methods">Available Config Methods</a></li>
             </ul>
         </div>
         <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" role="main">
             <h1 class="bd-title" id="content">Config</h1>
             <p class="bd-lead">
-                Config can able to register and retrieves the entire merge configuration.
+                The Config component stores the entire merged configuration of your application.
+                Each module returns its own configuration array from its <code>getConfig()</code>
+                method; the framework merges these together at boot time using
+                <code>array_merge_recursive</code> and stores the result in a
+                <code>Config</code> object. You can then retrieve values by key or needle
+                anywhere the application object is available.
             </p>
 
             <h2 id="config-files">Config Files</h2>
-            <p>JiNexus Framework config files are just simple arrays:</p>
+            <p>A config file is a PHP script that returns an array. Here is the top-level
+            <span class="gi">config/application.config.php</span> which loads the enabled
+            modules list:</p>
             <figure class="highlight">
                 <pre>
     <code class="language-php" data-lang="php">
-    <span class="m">return</span> [
-        <span class="no">'key_1'</span> => <span class="no">'value'</span>,
-        <span class="no">'key_2'</span> => <span class="no">'value'</span>,
-    ];
+
+    <span class="m">declare</span><span class="o">(</span><span class="m">strict_types</span><span class="o">=</span><span class="m">1</span><span class="o">)</span><span class="m">;</span>
+
+    <span class="m">return</span> <span class="o">[</span>
+        <span class="no">'modules'</span> <span class="m">=></span> <span class="m">require</span> <span class="nd">__DIR__</span> <span class="m">.</span> <span class="no">'/modules.config.php'</span><span class="m">,</span>
+    <span class="o">]</span><span class="m">;</span>
     </code>
                 </pre>
             </figure>
 
-            <p>The configuration of the JiNexus Framework core is done in the <span class="gi">config/application.config.php</span> file.</p>
+            <p>The <span class="gi">config/modules.config.php</span> file lists which modules
+            are enabled. Modules are loaded top-to-bottom, and later modules can override values
+            from earlier ones:</p>
+            <figure class="highlight">
+                <pre>
+    <code class="language-php" data-lang="php">
+
+    <span class="m">declare</span><span class="o">(</span><span class="m">strict_types</span><span class="o">=</span><span class="m">1</span><span class="o">)</span><span class="m">;</span>
+
+    <span class="m">return</span> <span class="o">[</span>
+        <span class="no">'Application'</span><span class="m">,</span>
+    <span class="o">]</span><span class="m">;</span>
+    </code>
+                </pre>
+            </figure>
+
+            <p>Each module defines its own <span class="gi">module.config.php</span> inside its
+            <span class="gi">config/</span> directory. This file returns all routes, view manager
+            settings, and any other configuration the module needs:</p>
+            <figure class="highlight">
+                <pre>
+    <code class="language-php" data-lang="php">
+
+    <span class="m">declare</span><span class="o">(</span><span class="m">strict_types</span><span class="o">=</span><span class="m">1</span><span class="o">)</span><span class="m">;</span>
+
+    <span class="m">return</span> <span class="o">[</span>
+        <span class="no">'routes'</span> <span class="m">=></span> <span class="o">[</span>
+            <span class="no">'application.home'</span> <span class="m">=></span> <span class="o">[</span>
+                <span class="no">'route'</span>       <span class="m">=></span> <span class="no">'/'</span><span class="m">,</span>
+                <span class="no">'controller'</span>  <span class="m">=></span> <span class="no">IndexController::class</span><span class="m">,</span>
+                <span class="no">'action'</span>      <span class="m">=></span> <span class="no">'index'</span><span class="m">,</span>
+            <span class="o">]</span><span class="m">,</span>
+        <span class="o">]</span><span class="m">,</span>
+        <span class="no">'view_manager'</span> <span class="m">=></span> <span class="o">[</span>
+            <span class="no">'template_map'</span> <span class="m">=></span> <span class="o">[</span>
+                <span class="no">'layout/layout'</span> <span class="m">=></span> <span class="no">'layout/layout.phtml'</span><span class="m">,</span>
+                <span class="no">'error/404'</span>    <span class="m">=></span> <span class="no">'error/404.phtml'</span><span class="m">,</span>
+            <span class="o">]</span><span class="m">,</span>
+            <span class="no">'template_path_stack'</span> <span class="m">=></span> <span class="nd">__DIR__</span> <span class="m">.</span> <span class="no">'/../view'</span><span class="m">,</span>
+        <span class="o">]</span><span class="m">,</span>
+    <span class="o">]</span><span class="m">;</span>
+    </code>
+                </pre>
+            </figure>
 
             <div class="alert alert-info" role="alert">
                 <h5 class="alert-heading">Important Note!</h5>
                 <p>
-                    All of the remaining framework configuration is done by editing the per module files that are located in the <span class="gi">module/{Module}/config</span> directory.
+                    All module configuration is done in <span class="gi">module/{Module}/config/module.config.php</span>.
+                    The array returned by this file is automatically merged into the global
+                    application configuration at boot time.
                 </p>
             </div>
 
-            <h2 id="environment-config">Environment Config</h2>
-            <p>These are the list of different config files in the framework</p>
-            <ul>
-                <li><span class="gi">config/application.config.php</span> - Config file for the entire Application</li>
-                <li><span class="gi">config/modules.config.php</span> - Config file for the list of enabled modules for this application</li>
-                <li><span class="gi">module/{Module}/config/modules.config.php</span> - Config file for a certain module</li>
-            </ul>
+            <h2 id="config-merge">Config Merge</h2>
+            <p>When the application boots, <code>ApplicationFactory::build()</code> performs
+            these steps:</p>
+            <ol>
+                <li>Reads <span class="gi">config/modules.config.php</span> for the enabled
+                module list.</li>
+                <li>Iterates each module and calls its <code>getConfig()</code> method.</li>
+                <li>Merges every module's configuration with
+                <code>array_merge_recursive()</code> — later modules override earlier ones
+                when keys collide.</li>
+                <li>Stores the final merged array in a <code>Config</code> object.</li>
+                <li>Passes the <code>Config</code> to the <code>Application</code>
+                constructor as <code>$this->config</code>.</li>
+            </ol>
 
-            <div class="alert alert-info" role="alert">
-                <h5 class="alert-heading">Important Note!</h5>
-                <p>
-                    In <span class="gi">modules.config.php</span> all modules are loaded from top to bottom. And each module configuration are merge to one whole configuration that includes routes, view_manager, etc.
-                    So if there are instances that a similar keys exist in each of your module configuration, please be aware that the latest module may overwrite the previous modules configuration.
-                </p>
-            </div>
+            <p>This means every module contributes to the same configuration namespace.
+            For example, if two modules both define a <code>view_manager</code> key, their
+            <code>template_map</code> entries are merged together.</p>
+
+            <h2 id="accessing-config">Accessing Config</h2>
+            <p>The merged configuration is available on the application object as
+            <code>$app->config</code>. Values can be retrieved by key using
+            <code>get()</code> or via the magic <code>__get()</code> method:</p>
+            <figure class="highlight">
+                <pre>
+    <code class="language-php" data-lang="php">
+
+    <span class="m">declare</span><span class="o">(</span><span class="m">strict_types</span><span class="o">=</span><span class="m">1</span><span class="o">)</span><span class="m">;</span>
+
+    <span class="m">namespace</span> <span class="o">Application\Controller</span><span class="m">;</span>
+
+    <span class="m">use</span> <span class="o">JiNexus\Mvc\Controller\AbstractController</span><span class="m">;</span>
+    <span class="m">use</span> <span class="o">JiNexus\Mvc\Model\ViewModel</span><span class="m">;</span>
+
+    <span class="m">class</span> <span class="o">IndexController</span> <span class="m">extends</span> <span class="o">AbstractController</span>
+    <span class="o">{</span>
+        <span class="m">public function</span> <span class="ss">indexAction</span><span class="o">()</span><span class="m">:</span> <span class="o">ViewModel</span>
+        <span class="o">{</span>
+            <span class="ni">// Access via get() — returns null if the key does not exist</span>
+            <span class="nd">$templatePath</span> <span class="o">=</span> <span class="nd">$this</span><span class="o">-></span><span class="ss">config</span><span class="o">-></span><span class="ss">get</span><span class="o">(</span><span class="no">'view_manager'</span><span class="o">);</span>
+
+            <span class="ni">// Same, using the magic __get() method</span>
+            <span class="nd">$templatePath</span> <span class="o">=</span> <span class="nd">$this</span><span class="o">-></span><span class="ss">config</span><span class="o">-></span><span class="nd">view_manager</span><span class="m">;</span>
+
+            <span class="ni">// With a default value when the key is missing</span>
+            <span class="nd">$debug</span> <span class="o">=</span> <span class="nd">$this</span><span class="o">-></span><span class="ss">config</span><span class="o">-></span><span class="ss">get</span><span class="o">(</span><span class="no">'debug'</span><span class="m">,</span> <span class="m">false</span><span class="o">);</span>
+
+            <span class="ni">// Check if a key exists</span>
+            <span class="m">if</span> <span class="o">(</span><span class="nd">$this</span><span class="o">-></span><span class="ss">config</span><span class="o">-></span><span class="ss">has</span><span class="o">(</span><span class="no">'routes'</span><span class="o">))</span> <span class="o">{</span>
+                <span class="ni">// …</span>
+            <span class="o">}</span>
+
+            <span class="m">return new</span> <span class="o">ViewModel([</span>
+                <span class="no">'templatePath'</span> <span class="m">=></span> <span class="nd">$templatePath</span><span class="m">,</span>
+            <span class="o">])</span><span class="m">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    </code>
+                </pre>
+            </figure>
+
+            <p>Inside a view template, the <code>$this->config</code> object is also
+            available because the View holds a reference to the application:</p>
+            <figure class="highlight">
+                <pre>
+    <code>
+
+    <span class="ss">&lt;p&gt;</span><span class="m">&lt;?php echo</span> <span class="nd">$this</span><span class="o">-></span><span class="ss">config</span><span class="o">-></span><span class="ss">get</span><span class="o">(</span><span class="no">'timezone'</span><span class="m">,</span> <span class="no">'UTC'</span><span class="o">);</span> <span class="m">?&gt;</span><span class="ss">&lt;/p&gt;</span>
+    </code>
+                </pre>
+            </figure>
 
             <h2 id="available-config-methods">Available Config Methods</h2>
-            <p>These are the list of available config methods that can be use in the Controller.</p>
-            <table class="table table-hover table-responsive">
-                <thead>
-                    <tr>
-                        <th scope="col">Method</th>
-                        <th scope="col">Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td scope="row"><span class="ss">getConfig()</span></td>
-                        <td>Get the entire available config</td>
-                    </tr>
-                    <tr>
-                        <td scope="row"><span class="ss">setConfig()</span></td>
-                        <td>Set an entire new config</td>
-                    </tr>
-                    <tr>
-                        <td scope="row"><span class="ss">get()</span></td>
-                        <td>Get a config by key or needle and return its value or null if there is no element set</td>
-                    </tr>
-                    <tr>
-                        <td scope="row"><span class="ss">set()</span></td>
-                        <td>Set a value in the config provided by its key or needle</td>
-                    </tr>
-                    <tr>
-                        <td scope="row"><span class="ss">has()</span></td>
-                        <td>Check if needle exist in the config, return true if found and false if not</td>
-                    </tr>
-                </tbody>
-            </table>
+            <p>These are the methods provided by the <code>Config</code> object:</p>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>getConfig()</code></td>
+                            <td>Get the entire configuration array</td>
+                        </tr>
+                        <tr>
+                            <td><code>setConfig(array $config)</code></td>
+                            <td>Replace the entire configuration array</td>
+                        </tr>
+                        <tr>
+                            <td><code>get($needle, $default = null)</code></td>
+                            <td>Get a value by key; returns <code>$default</code> if the key does not exist</td>
+                        </tr>
+                        <tr>
+                            <td><code>set($needle, $value)</code></td>
+                            <td>Set a value by key</td>
+                        </tr>
+                        <tr>
+                            <td><code>has($needle)</code></td>
+                            <td>Returns <code>true</code> if the key exists, <code>false</code> otherwise</td>
+                        </tr>
+                        <tr>
+                            <td><code>__get($needle)</code></td>
+                            <td>Magic method, forwards to <code>get($needle)</code> — enables <code>$config->key</code> syntax</td>
+                        </tr>
+                        <tr>
+                            <td><code>__set($needle, $value)</code></td>
+                            <td>Magic method, forwards to <code>set($needle, $value)</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <?php echo $this->render('application/documentation/partial/note'); ?>
 

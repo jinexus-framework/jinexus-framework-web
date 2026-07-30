@@ -1,4 +1,5 @@
 <main class="bd-masthead keep-calm-and-code-on" id="content" role="main">
+    <?php echo $this->render('layout/partial/fork-me-on-github-ribbon'); ?>
     <div class="container">
         <div class="row align-items-center">
             <div class="col-12 col-md-12 mx-auto my-5">
@@ -24,19 +25,28 @@
         <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" role="main">
             <h1 class="bd-title" id="content">Module Manager</h1>
             <p class="bd-lead">
-                The Module Manager is responsible for iterating over an array of module names and triggering a sequence of instantiation of module classes, initialization, and merge configuration.
+                The Module Manager keeps an ordered registry of module namespaces and resolves any
+                of them to a configuration array by convention — appending <code>\Module</code> to
+                the namespace, instantiating the class, and calling its <code>getConfig()</code>
+                method. Resolution is independent of registration: a module need not be added to
+                the manager before its config can be read.
             </p>
 
             <h2 id="module">Module</h2>
             <p>
-                By default, one module is provided with the JiNexus Framework, named "Application".
-                It provides a controller to handle the "home" page of the application, the layout template, and templates for 404 and error pages, and its own configuration.
+                By default, one module is provided with the JiNexus Framework, named
+                <code>Application</code>. It provides a controller to handle the "home" page of
+                the application, the layout template, templates for 404 and error pages, and its
+                own configuration via <code>module.config.php</code>.
             </p>
             <p>
-                Module is loaded through the help of Module Manager. You can create another module to separate other controllers and layout templates.
+                Each module is a PHP class named <code>Module</code> directly under its namespace
+                (e.g. <code>Application\Module</code>), extending
+                <code>AbstractModule</code> and overriding <code>getConfig(): array</code>.
             </p>
+
             <h4 id="create-a-new-module">Create a new Module</h4>
-            <p>Lets create a new module name "Blog". Below is the updated Application Structure of my project:</p>
+            <p>Let's create a new module named <code>Blog</code>. Below is the updated directory layout:</p>
             <figure class="highlight">
                 <pre>
                     <code>
@@ -45,6 +55,7 @@
             <span class="nt">application.config.php</span>
             <span class="nt">modules.config.php</span>
         <span class="nt">data/</span>
+            <span class="nt">cache/</span>
         <span class="nt">module/</span>
             <span class="nt">Application/</span>
             <span class="nt">Blog/</span>
@@ -53,39 +64,64 @@
                 <span class="nt">src/</span>
                     <span class="nt">Controller/</span>
                     <span class="nt">Module.php</span>
-                <span class="nt">view</span>
+                <span class="nt">view/</span>
+                    <span class="nt">blog/</span>
         <span class="nt">public/</span>
-            <span class="nt">asset/</span>
-            <span class="nt">.htaccess</span>
             <span class="nt">index.php</span>
-        <span class="nt">vendor/</span>
-                    </code>
+            <span class="nt">.htaccess</span>
+            <span class="nt">asset/</span>
+        <span class="nt">test/</span>
+            <span class="nt">Application/</span>
+            <span class="nt">Blog/</span>
+        <span class="nt">vendor/</span></code>
                 </pre>
             </figure>
 
-            <p>Next is you have to modify the Module.php and add the following methods. Your <span class="gi">Module.php</span> should look like this:</p>
+            <p>First, create <code>module/Blog/src/Module.php</code> extending <code>AbstractModule</code>:</p>
             <figure class="highlight">
                 <pre>
     <code class="language-php" data-lang="php">
-    <span class="m">namespace</span> <span class="o">Application;</span>
+
+    <span class="m">declare</span><span class="o">(</span><span class="m">strict_types</span><span class="o">=</span><span class="m">1</span><span class="o">);</span>
+
+    <span class="m">namespace</span> <span class="o">Blog;</span>
 
     <span class="m">use</span> <span class="o">JiNexus\ModuleManager\ModuleManager\AbstractModule;</span>
 
     <span class="m">class</span> <span class="o">Module</span> <span class="m">extends</span> <span class="o">AbstractModule</span>
     <span class="o">{</span>
-        <span class="no"><i>/**</i></span>
-        <span class="no"><i> * <u>@return</u> mixed</i></span>
-        <span class="no"><i> */</i></span>
-        <span class="m">public function</span> <span class="ss">getConfig</span><span class="o">()</span>
+        <span class="m">public function</span> <span class="ss">getConfig</span><span class="o">():</span> <span class="m">array</span>
         <span class="o">{</span>
-            <span class="m">return include</span> <span class="nd">__DIR__</span> <span class="o">.</span> <span class="no">'/../config/module.config.php'</span><span class="m">;</span>
+            <span class="m">return</span> <span class="o">[</span>
+                <span class="no">'routes'</span> <span class="m">=&gt;</span> <span class="o">[</span>
+                    <span class="no">'blog'</span> <span class="m">=&gt;</span> <span class="o">[</span>
+                        <span class="no">'route'</span> <span class="m">=&gt;</span> <span class="no">'/blog'</span><span class="m">,</span>
+                        <span class="no">'controller'</span> <span class="m">=&gt;</span> <span class="no">'Blog\Controller\IndexController'</span><span class="m">,</span>
+                        <span class="no">'action'</span> <span class="m">=&gt;</span> <span class="no">'index'</span><span class="m">,</span>
+                    <span class="o">],</span>
+                <span class="o">],</span>
+            <span class="o">];</span>
         <span class="o">}</span>
     <span class="o">}</span>
     </code>
                 </pre>
             </figure>
 
-            <p>Next is we have to map our new module using PSR-4 auto loading. Your <span class="gi">composer.json</span> should look like this:</p>
+            <p>Alternatively, use a separate config file and include it — the same pattern the
+            <code>Application</code> module follows:</p>
+            <figure class="highlight">
+                <pre>
+    <code class="language-php" data-lang="php">
+    <span class="m">public function</span> <span class="ss">getConfig</span><span class="o">():</span> <span class="m">array</span>
+    <span class="o">{</span>
+        <span class="m">return include</span> <span class="nd">__DIR__</span> <span class="o">.</span> <span class="no">'/../config/module.config.php'</span><span class="m">;</span>
+    <span class="o">}</span>
+    </code>
+                </pre>
+            </figure>
+
+            <p>Next, map the <code>Blog</code> namespace using PSR-4 autoloading in
+            <span class="gi">composer.json</span>:</p>
             <figure class="highlight">
                 <pre>
     <code>
@@ -97,36 +133,47 @@
     <span class="o">}</span><span class="m">,</span>
     <span class="nd">"autoload-dev"</span><span class="m">:</span> <span class="o">{</span>
         <span class="nd">"psr-4"</span><span class="m">:</span> <span class="o">{</span>
-            <span class="nd">"Application\\"</span><span class="m">:</span> <span class="no">"module/Application/test/"</span><span class="m">,</span>
-            <span class="nd">"Blog\\"</span><span class="m">:</span> <span class="no">"module/Blog/test/"</span>
+            <span class="nd">"Application\\Test\\"</span><span class="m">:</span> <span class="no">"test/Application/"</span><span class="m">,</span>
+            <span class="nd">"Blog\\Test\\"</span><span class="m">:</span> <span class="no">"test/Blog/"</span>
         <span class="o">}</span>
     <span class="o">}</span>
     </code>
                 </pre>
             </figure>
+            <p>Then dump the autoloader so Composer picks up the new namespace:</p>
+            <figure class="highlight">
+                <pre><code class="language-sh" data-lang="sh">composer dump-autoload</code></pre>
+            </figure>
 
-            <p>Lastly is we have to enable our new module by adding it to our <span class="gi">config/modules.config.php</span>.</p>
-            <p>Your <span class="gi">modules.config.php</span> should look like this:</p>
+            <p>Lastly, enable the new module by adding it to
+            <span class="gi">config/modules.config.php</span>:</p>
             <figure class="highlight">
                 <pre>
     <code class="language-php" data-lang="php">
+
+    <span class="m">declare</span><span class="o">(</span><span class="m">strict_types</span><span class="o">=</span><span class="m">1</span><span class="o">);</span>
+
     <span class="no"><i>/**</i></span>
     <span class="no"><i> * List of enabled modules for this application.</i></span>
-    <span class="no"><i> * </i></span>
+    <span class="no"><i> *</i></span>
     <span class="no"><i> * This should be an array of module namespaces used in the application.</i></span>
     <span class="no"><i> */</i></span>
     <span class="m">return</span> <span class="o">[</span>
         <span class="no">'Application'</span><span class="m">,</span>
         <span class="no">'Blog'</span><span class="m">,</span>
-    <span class="o">]</span><span class="m">;</span>
+    <span class="o">];</span>
     </code>
                 </pre>
             </figure>
             <div class="alert alert-info" role="alert">
                 <h5 class="alert-heading">Important Note!</h5>
                 <p>
-                    In <span class="gi">modules.config.php</span> all modules are loaded from top to bottom. And each module configuration are merge to one whole configuration that includes routes, view_manager, etc.
-                    So if there are instances that a similar keys exist in each of your module configuration, please be aware that the latest module may overwrite the previous modules configuration.
+                    In <span class="gi">modules.config.php</span> all modules are loaded from top
+                    to bottom. Each module configuration is merged via
+                    <code>array_merge_recursive</code> into one combined configuration that
+                    includes routes, <code>view_manager</code>, and other settings. If the same
+                    keys exist across modules, the later module's values are merged on top of
+                    the earlier ones.
                 </p>
             </div>
 

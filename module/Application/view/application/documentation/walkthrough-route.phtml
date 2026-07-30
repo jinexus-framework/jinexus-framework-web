@@ -1,4 +1,5 @@
 <main class="bd-masthead keep-calm-and-code-on" id="content" role="main">
+    <?php echo $this->render('layout/partial/fork-me-on-github-ribbon'); ?>
     <div class="container">
         <div class="row align-items-center">
             <div class="col-12 col-md-12 mx-auto my-5">
@@ -13,78 +14,146 @@
         <?php echo $this->render('application/documentation/partial/main-sidebar'); ?>
         <div class="d-none d-xl-block col-xl-2 bd-toc">
             <ul class="section-nav">
-                <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.route'); ?>#basic-example-of-route">Basic Example of Route</a></li>
-                <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.route'); ?>#route-redirect">Route Redirect</a></li>
+                <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.route'); ?>#route-table">Route Table</a></li>
+                <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.route'); ?>#how-matching-works">How Matching Works</a></li>
+                <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.route'); ?>#route-uri-resolution">URI Resolution</a></li>
+                <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.route'); ?>#route-redirect">Redirecting</a></li>
             </ul>
         </div>
         <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" role="main">
             <h1 class="bd-title" id="content">Route</h1>
             <p class="bd-lead">
-                The JiNexus Framework Route lets you map URL patterns towards classes and methods for each module.
+                The Route component maps incoming URIs to controller actions. A route table is a
+                name-keyed array of route definitions; on a match, the corresponding controller
+                and action are dispatched by the MVC pipeline.
             </p>
 
-            <h2 id="basic-example-of-route">Basic Example of Route</h2>
-            <p>Here's a basic example about our routing system.</p>
+            <h2 id="route-table">Route Table</h2>
+            <p>
+                Routes are defined in each module's <code>module.config.php</code> under the
+                <code>'routes'</code> key. Each entry requires a <code>route</code> URI, a
+                <code>controller</code> FQCN, and an <code>action</code> name:
+            </p>
             <figure class="highlight">
                 <pre>
     <code class="language-php" data-lang="php">
-    <span class="m">namespace</span> <span class="o">namespace Application</span><span class="m">;</span>
+
+    <span class="m">declare</span><span class="o">(</span><span class="m">strict_types</span><span class="o">=</span><span class="m">1</span><span class="o">);</span>
+
+    <span class="m">namespace</span> <span class="o">Application</span><span class="m">;</span>
 
     <span class="m">use</span> <span class="o">Application\Controller\IndexController</span><span class="m">;</span>
 
     <span class="m">return</span> <span class="o">[</span>
-        <span class="no">'routes'</span> <span class="o">=> [</span>
-            <span class="no">'application.home'</span> <span class="o">=> [</span> <span class="ni">// Route name</span>
-                <span class="no">'route'</span> <span class="o">=></span> <span class="no">'/'</span><span class="m">,</span> <span class="ni">// Route URI</span>
-                <span class="no">'controller'</span> <span class="o">=></span> <span class="o">IndexController::</span><span class="m">class,</span> <span class="ni">// Controller to dispatch</span>
-                <span class="no">'action'</span> <span class="o">=></span> <span class="no">'index'</span> <span class="ni">// Method to dispatch</span>
-            <span class="o">]</span><span class="m">,</span>
-        <span class="o">]</span>
-    <span class="o">]</span><span class="m">;</span>
+        <span class="no">'routes'</span> <span class="m">=&gt;</span> <span class="o">[</span>
+            <span class="no">'application.home'</span> <span class="m">=&gt;</span> <span class="o">[</span>
+                <span class="no">'route'</span>       <span class="m">=&gt;</span> <span class="no">'/'</span><span class="m">,</span>
+                <span class="no">'controller'</span>  <span class="m">=&gt;</span> <span class="o">IndexController::</span><span class="m">class,</span>
+                <span class="no">'action'</span>      <span class="m">=&gt;</span> <span class="no">'index'</span><span class="m">,</span>
+            <span class="o">],</span>
+        <span class="o">],</span>
+        <span class="no">'view_manager'</span> <span class="m">=&gt;</span> <span class="o">[</span>
+            <span class="no">'template_map'</span> <span class="m">=&gt;</span> <span class="o">[</span>
+                <span class="no">'layout/layout'</span> <span class="m">=&gt;</span> <span class="no">'layout/layout.phtml'</span><span class="m">,</span>
+                <span class="no">'error/404'</span>      <span class="m">=&gt;</span> <span class="no">'error/404.phtml'</span><span class="m">,</span>
+            <span class="o">],</span>
+            <span class="no">'template_path_stack'</span> <span class="m">=&gt;</span> <span class="nd">__DIR__</span> <span class="o">.</span> <span class="no">'/../view'</span><span class="m">,</span>
+        <span class="o">],</span>
+    <span class="o">];</span>
+    </code>
+                </pre>
+            </figure>
+            <p>
+                The route table supports any additional keys per entry — they are returned
+                untouched on a match and can be used for middleware flags, permissions, or
+                metadata.
+            </p>
+
+            <h2 id="how-matching-works">How Matching Works</h2>
+            <p>
+                During the MVC pipeline, <code>getMatchRoute()</code> derives the current URI
+                from <code>$_SERVER</code> (stripping the front-controller directory and query
+                string) and compares it against each registered route. The first match wins.
+            </p>
+            <p>
+                When a route matches, these pipeline properties become available:
+            </p>
+            <ul>
+                <li><code>$app->matchRoute</code> — the full matched route entry keyed by name</li>
+                <li><code>$app->namespace</code> — the controller FQCN from the match</li>
+                <li><code>$app->controllerName</code> — the short controller class name</li>
+                <li><code>$app->actionName</code> — the matched action (e.g. <code>index</code>)</li>
+                <li><code>$app->moduleName</code> — the first segment of the namespace</li>
+            </ul>
+            <p>
+                If no route matches, the pipeline sends 404 headers and renders the
+                <code>error/404</code> template.
+            </p>
+
+            <h2 id="route-uri-resolution">URI Resolution</h2>
+            <p>
+                Route names can also be resolved back to URIs via <code>getRouteUri()</code>.
+                This is useful for building links in views or redirect targets:
+            </p>
+            <figure class="highlight">
+                <pre>
+    <code class="language-php" data-lang="php">
+
+    <span class="ni">// Resolve a route name to its URI</span>
+    <span class="nd">$uri</span> <span class="o">=</span> <span class="nd">$route->getRouteUri</span><span class="o">(</span><span class="no">'application.home'</span><span class="o">);</span>
+    <span class="ni">// $uri = '/'</span>
+
+    <span class="ni">// You can also pass a route table explicitly</span>
+    <span class="nd">$uri</span> <span class="o">=</span> <span class="nd">$route->getRouteUri</span><span class="o">(</span><span class="no">'blog'</span><span class="m">,</span> <span class="o">[</span>
+        <span class="no">'blog'</span> <span class="m">=&gt;</span> <span class="o">[</span><span class="no">'route'</span> <span class="m">=&gt;</span> <span class="no">'/blog'</span><span class="o">],</span>
+    <span class="o">]);</span>
+    <span class="ni">// $uri = '/blog'</span>
     </code>
                 </pre>
             </figure>
 
-            <p>Routes are registered in the <span class="gi">module/{Module}/config/module.config.php</span>.</p>
-
-            <h2 id="route-redirect">Route Redirect</h2>
-            <p>You can simply redirect to another route using the command below. You only have to provide the route name of the route that you want to be redirected.</p>
+            <h2 id="route-redirect">Redirecting to a Route</h2>
+            <p>
+                The <code>$this->redirect</code> helper in controllers sends a
+                <code>Location</code> header to a named route and terminates the request:
+            </p>
             <figure class="highlight">
                 <pre>
     <code class="language-php" data-lang="php">
-    <span class="m">namespace</span> <span class="o">namespace Application\Controller</span><span class="m">;</span>
+
+    <span class="m">declare</span><span class="o">(</span><span class="m">strict_types</span><span class="o">=</span><span class="m">1</span><span class="o">);</span>
+
+    <span class="m">namespace</span> <span class="o">Application\Controller</span><span class="m">;</span>
 
     <span class="m">use</span> <span class="o">JiNexus\Mvc\Controller\AbstractController</span><span class="m">;</span>
-    <span class="m">use</span> <span class="o">JiNexus\Mvc\Model\ViewModel</span><span class="m">;</span>
 
-    <span class="no"><i>/**</i></span>
-    <span class="no"><i> * Class IndexController</i></span>
-    <span class="no"><i> * <u>@package</u> Application\Controller</i></span>
-    <span class="no"><i> */</i></span>
     <span class="m">class</span> <span class="o">IndexController</span> <span class="m">extends</span> <span class="o">AbstractController</span>
     <span class="o">{</span>
-        <span class="no"><i>/**</i></span>
-        <span class="no"><i> * <u>@return</u> ViewModel</i></span>
-        <span class="no"><i> */</i></span>
-        <span class="m">public function</span> <span class="ss">indexAction</span><span class="o">()</span>
+        <span class="m">public function</span> <span class="ss">indexAction</span><span class="o">():</span> <span class="m">void</span>
         <span class="o">{</span>
-            <span class="nd">$this</span><span class="o">-></span><span class="nd">redirect</span><span class="o">-></span><span class="ss">toRoute</span><span class="o">(</span><span class="no">'application.about.author'</span><span class="o">)</span><span class="m">;</span>
+            <span class="ni">// 302 (temporary) redirect</span>
+            <span class="m">$this->redirect->toRoute</span><span class="o">(</span><span class="no">'application.home'</span><span class="o">);</span>
         <span class="o">}</span>
     <span class="o">}</span>
     </code>
                 </pre>
             </figure>
 
-            <p>Or if you want to redirect permanently, you can turn the second argument to true.</p>
+            <p>Pass <code>true</code> as the second argument for a 301 (permanent) redirect:</p>
             <figure class="highlight">
                 <pre>
     <code class="language-php" data-lang="php">
-            <span class="nd">$this</span><span class="o">-></span><span class="nd">redirect</span><span class="o">-></span><span class="ss">toRoute</span><span class="o">(</span><span class="no">'application.about.author'</span><span class="m">, true</span><span class="o">)</span><span class="m">;</span>
+
+    <span class="m">$this->redirect->toRoute</span><span class="o">(</span><span class="no">'application.home'</span><span class="m">,</span> <span class="m">true</span><span class="o">);</span>
+    <span class="ni">// 301 Location: /</span>
     </code>
                 </pre>
             </figure>
 
-            <p>As you can see the route system is very straight forward and simple. Each route has its own route name, a corresponding URI, and a controller and method to dispatch.</p>
+            <p>
+                The redirect throws a <code>RouteException</code> if the route name is empty or
+                not found and skips the header if headers have already been sent.
+            </p>
 
             <?php echo $this->render('application/documentation/partial/note'); ?>
 
@@ -100,7 +169,7 @@
                 </ul>
                 <ul class="pagination d-inline-block float-right">
                     <li class="page-item">
-                        <a class="page-link" href="<?php echo $this->url('application.documentation.walkthrough.http-request'); ?>" aria-label="Next">
+                        <a class="page-link" href="<?php echo $this->url('application.documentation.walkthrough.http'); ?>" aria-label="Next">
                             <span>Next</span>
                             <span aria-hidden="true">&raquo;</span>
                         </a>

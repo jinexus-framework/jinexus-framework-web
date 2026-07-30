@@ -1,4 +1,5 @@
 <main class="bd-masthead keep-calm-and-code-on" id="content" role="main">
+    <?php echo $this->render('layout/partial/fork-me-on-github-ribbon'); ?>
     <div class="container">
         <div class="row align-items-center">
             <div class="col-12 col-md-12 mx-auto my-5">
@@ -13,41 +14,87 @@
         <?php echo $this->render('application/documentation/partial/main-sidebar'); ?>
         <div class="d-none d-xl-block col-xl-2 bd-toc">
             <ul class="section-nav">
+                <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.introduction'); ?>#request-flow">Request Flow</a></li>
                 <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.walkthrough.introduction'); ?>#application-structure">Application Structure</a></li>
             </ul>
         </div>
         <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" role="main">
             <h1 class="bd-title" id="content">Introduction</h1>
             <p class="bd-lead">
-                JiNexus MVC is a design pattern layer for JiNexus Framework which focuses on modularity and performance that separates business logic and presentation.
+                This walkthrough guides you through JiNexus Framework's MVC pipeline — from module
+                configuration and route matching to controller dispatch and view rendering — so you
+                understand how each component fits together when building your application.
             </p>
-            <p>The MVC layer is built on top of the following components:</p>
-            <ul>
-                <li>Module Manager - load the modules and merge the configuration</li>
-                <li>Config - register and retrieves the merge configuration.</li>
-                <li>Route - provides routing of a request. It matches the request to its respective controller to dispatch</li>
-                <li>HTTP Request - provides an object oriented interface to global variables such as $_GET, $_POST, $_FILES, $_COOKIE and $_SERVER as well as easy access to other useful request information.</li>
-            </ul>
+
+            <h2 id="request-flow">Request Flow</h2>
+            <p>
+                Every request to a JiNexus application passes through this pipeline:
+            </p>
+            <ol>
+                <li>
+                    <strong>Front controller</strong> (<code>public/index.php</code>) loads Composer
+                    autoloading, reads <code>config/application.config.php</code>, and hands it to
+                    <code>ApplicationFactory::build()</code>.
+                </li>
+                <li>
+                    <strong>Module config aggregation</strong> — the factory iterates every module
+                    listed in <code>modules.config.php</code>, instantiates its <code>Module</code>
+                    class, and merges all <code>getConfig()</code> arrays together.
+                </li>
+                <li>
+                    <strong>Route matching</strong> — the merged route table is registered on the
+                    <code>Route</code> component, which derives the current URI from
+                    <code>$_SERVER</code> and looks for a match.
+                </li>
+                <li>
+                    <strong>Controller dispatch</strong> — the matched controller class is
+                    instantiated, and its action method (e.g. <code>indexAction()</code>) is called.
+                </li>
+                <li>
+                    <strong>View rendering</strong> — the layout template is rendered with the view
+                    variables set during dispatch. A 404 response terminates the pipeline when no
+                    route matches.
+                </li>
+            </ol>
 
             <h2 id="application-structure">Application Structure</h2>
-            <p>Below is the basic application structure:</p>
+            <p>Below is the complete skeleton application structure:</p>
             <figure class="highlight">
                 <pre>
                     <code>
     <span class="nt">application_root/</span>
         <span class="nt">config/</span>
-            <span class="nt">application.config.php</span>
-            <span class="nt">modules.config.php</span>
+            <span class="nt">application.config.php</span>          Module list reference
+            <span class="nt">modules.config.php</span>              Enabled module namespaces
         <span class="nt">data/</span>
+            <span class="nt">cache/</span>                            Cache directory (writable)
         <span class="nt">module/</span>
+            <span class="nt">Application/</span>
+                <span class="nt">config/</span>
+                    <span class="nt">module.config.php</span>           Route and view-manager config
+                <span class="nt">src/</span>
+                    <span class="nt">Module.php</span>                    Application module class
+                    <span class="nt">Controller/</span>
+                        <span class="nt">IndexController.php</span>        Default controller
+                <span class="nt">view/</span>
+                    <span class="nt">application/index/</span>           View templates
+                    <span class="nt">error/</span>                       Error page templates
+                    <span class="nt">layout/</span>                      Layout templates
         <span class="nt">public/</span>
-            <span class="nt">asset/</span>
-            <span class="nt">.htaccess</span>
-            <span class="nt">index.php</span>
-        <span class="nt">vendor/</span>
+            <span class="nt">index.php</span>                        Front controller (document root)
+            <span class="nt">.htaccess</span>                        Apache rewrite rules
+            <span class="nt">asset/</span>                            Static assets
+        <span class="nt">test/</span>
+            <span class="nt">Application/</span>                      Unit tests
+        <span class="nt">vendor/</span>                              Composer dependencies
                     </code>
                 </pre>
             </figure>
+            <p>
+                Each directory and file is covered in detail in the walkthrough pages that follow.
+                Start with the <a href="<?php echo $this->url('application.documentation.walkthrough.module-manager'); ?>">Module Manager</a>
+                section to learn how modules are registered and configured.
+            </p>
 
             <?php echo $this->render('application/documentation/partial/note'); ?>
 

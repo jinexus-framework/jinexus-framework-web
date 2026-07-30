@@ -1,4 +1,5 @@
 <main class="bd-masthead keep-calm-and-code-on" id="content" role="main">
+    <?php echo $this->render('layout/partial/fork-me-on-github-ribbon'); ?>
     <div class="container">
         <div class="row align-items-center">
             <div class="col-12 col-md-12 mx-auto my-5">
@@ -18,12 +19,12 @@
                 <li class="toc-entry toc-h2">
                     <a href="<?php echo $this->url('application.documentation.getting-started.introduction'); ?>#components">Components</a>
                     <ul>
-                        <li class="toc-entry toc-h3"><a href="<?php echo $this->url('application.documentation.getting-started.introduction'); ?>#skeleton">Skeleton</a></li>
-                        <li class="toc-entry toc-h3"><a href="<?php echo $this->url('application.documentation.getting-started.introduction'); ?>#module-manager">Module Manager</a></li>
                         <li class="toc-entry toc-h3"><a href="<?php echo $this->url('application.documentation.getting-started.introduction'); ?>#config">Config</a></li>
-                        <li class="toc-entry toc-h3"><a href="<?php echo $this->url('application.documentation.getting-started.introduction'); ?>#route">Route</a></li>
                         <li class="toc-entry toc-h3"><a href="<?php echo $this->url('application.documentation.getting-started.introduction'); ?>#http">HTTP</a></li>
+                        <li class="toc-entry toc-h3"><a href="<?php echo $this->url('application.documentation.getting-started.introduction'); ?>#route">Route</a></li>
+                        <li class="toc-entry toc-h3"><a href="<?php echo $this->url('application.documentation.getting-started.introduction'); ?>#module-manager">Module Manager</a></li>
                         <li class="toc-entry toc-h3"><a href="<?php echo $this->url('application.documentation.getting-started.introduction'); ?>#mvc">MVC</a></li>
+                        <li class="toc-entry toc-h3"><a href="<?php echo $this->url('application.documentation.getting-started.introduction'); ?>#skeleton">Skeleton</a></li>
                     </ul>
                 </li>
                 <li class="toc-entry toc-h2"><a href="<?php echo $this->url('application.documentation.getting-started.introduction'); ?>#community">Community</a></li>
@@ -32,71 +33,127 @@
         <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" role="main">
             <h1 class="bd-title" id="content">Introduction</h1>
             <p class="bd-lead">
-                Get started with JiNexus Framework, a modular, lightweight and easy to use PHP framework and probably the smallest and fastest MVC framework that you will ever use.
+                JiNexus Framework is a modular, lightweight, and component-based PHP MVC framework for PHP 8.5+.
+                It provides a minimal request-dispatch-render pipeline by wiring together small, focused,
+                independently testable components — each with zero external dependencies — so you pay only
+                for what you use.
             </p>
+
+            <?php echo $this->render('application/documentation/partial/banner'); ?>
 
             <h2 id="quick-start">Quick start</h2>
             <p>
-                This documentation will guide you throughout the process of how easy and swift you can create your own application using JiNexus Framework.
-                This includes from setting up your modules, to your configs, adding your routes, and dispatching your controllers, models and views.
+                This documentation guides you through creating an application with JiNexus Framework —
+                from setting up your modules and configuration, to defining routes and dispatching
+                controllers, models, and views.
+            </p>
+            <p>
+                The fastest way to get started is via the skeleton project:
+            </p>
+            <pre><code>composer create-project jinexus-framework/jinexus-framework-skeleton path/to/my-project
+cd path/to/my-project
+composer run --timeout=0 serve</code></pre>
+            <p>
+                Browse to <a href="http://localhost:8000" target="_blank">http://localhost:8000</a> and
+                you should see the default application page.
             </p>
 
             <h2 id="release-and-development">Release and Development</h2>
             <p>
-                JiNexus Framework is under active development. If you are interested in following the development of this project, you may check its GitHub repositories.
+                JiNexus Framework is under active development. If you are interested in following the
+                development of this project, you may check its GitHub repositories.
                 This is a great resource for staying up to date with the latest developments!
-                <a href="https://github.com/jinexus-framework">Head to the GitHub page.</a>
+                <a href="https://github.com/jinexus-framework" target="_blank">Head to the GitHub page.</a>
             </p>
 
             <h2 id="components">Components</h2>
             <p>
-                These are the list of components that made JiNexus Framework possible.
-            </p>
-
-            <h3 id="skeleton">Skeleton</h3>
-            <p>
-                JiNexus Framework Skeleton for jinexus-mvc projects.
-                <a href="https://github.com/jinexus-framework/jinexus-framework-skeleton">Head to the GitHub page.</a>
-            </p>
-
-            <h3 id="module-manager">Module Manager</h3>
-            <p>
-                Module Manager component from JiNexus Framework.
-                <a href="https://github.com/jinexus-framework/jinexus-module-manager">Head to the GitHub page.</a>
+                The framework is composed of six packages, arranged in a layered architecture.
+                Each component lives in its own repository, has its own test suite at 100% coverage,
+                and is installable via Composer independently.
             </p>
 
             <h3 id="config">Config</h3>
             <p>
-                Config component from JiNexus Framework.
-                <a href="https://github.com/jinexus-framework/jinexus-config">Head to the GitHub page.</a>
-            </p>
-
-            <h3 id="route">Route</h3>
-            <p>
-                Route component from JiNexus Framework.
-                <a href="https://github.com/jinexus-framework/jinexus-route">Head to the GitHub page.</a>
+                <code>jinexus-framework/jinexus-config</code> it provides simple, in-memory access to
+                configuration data. It stores configuration as an associative array and exposes it
+                through explicit accessors (<code>get()</code>, <code>set()</code>, <code>has()</code>),
+                magic property access (<code>__get</code>/<code>__set</code>), and optional
+                reflection-based getters/setters. It has <strong>zero external dependencies</strong> —
+                you decide where the data comes from (files, environment, a database, or plain arrays).
+                <a href="https://github.com/jinexus-framework/jinexus-config" target="_blank">Head to the GitHub page.</a>
             </p>
 
             <h3 id="http">HTTP</h3>
             <p>
-                HTTP component from JiNexus Framework.
-                <a href="https://github.com/jinexus-framework/jinexus-http">Head to the GitHub page.</a>
+                <code>jinexus-framework/jinexus-http</code> provides an object-oriented interface over
+                PHP's HTTP request super-globals — <code>$_GET</code>, <code>$_POST</code>,
+                <code>$_FILES</code>, <code>$_COOKIE</code>, and <code>$_SERVER</code>. Each is wrapped
+                in a <code>Parameter</code> bag providing <code>get()</code>, <code>has()</code>,
+                <code>add()</code>, <code>remove()</code>, <code>all()</code>, and iterator support.
+                Convenience helpers (<code>isAjax()</code>, <code>isSecure()</code>,
+                <code>baseUrl()</code>) are also included, and request data can be injected explicitly
+                for easy testing.
+                <a href="https://github.com/jinexus-framework/jinexus-http" target="_blank">Head to the GitHub page.</a>
+            </p>
+
+            <h3 id="route">Route</h3>
+            <p>
+                <code>jinexus-framework/jinexus-route</code> provides route matching against a
+                name-keyed table of route definitions, together with a redirect helper.
+                <code>getMatchRoute()</code> resolves a URI against the route table and returns the
+                matching entry. <code>getRouteUri()</code> resolves a route name back to its URI.
+                <code>getUri()</code> derives the current request URI from <code>$_SERVER</code> by
+                stripping the front-controller directory and query string. The <code>Redirect</code>
+                helper sends <code>Location</code> headers for named routes (301/302) and terminates
+                the request — with <code>protected</code> seams for testing.
+                <a href="https://github.com/jinexus-framework/jinexus-route" target="_blank">Head to the GitHub page.</a>
+            </p>
+
+            <h3 id="module-manager">Module Manager</h3>
+            <p>
+                <code>jinexus-framework/jinexus-module-manager</code> keeps an ordered registry of
+                module namespaces and resolves any of them to a configuration array by convention.
+                Register a namespace (e.g. <code>Acme\Blog</code>), and <code>getConfig()</code>
+                instantiates <code>Acme\Blog\Module</code> and returns its config — resolution is
+                independent of registration. Modules extend <code>AbstractModule</code> and override
+                <code>getConfig(): array</code> to contribute routes, view paths, and services. The
+                manager has <strong>zero external dependencies</strong>.
+                <a href="https://github.com/jinexus-framework/jinexus-module-manager" target="_blank">Head to the GitHub page.</a>
             </p>
 
             <h3 id="mvc">MVC</h3>
             <p>
-                MVC component from JiNexus Framework.
-                <a href="https://github.com/jinexus-framework/jinexus-mvc">Head to the GitHub page.</a>
+                <code>jinexus-framework/jinexus-mvc</code> is the kernel that wires the four components
+                above into a request-dispatch-render pipeline. <code>ApplicationFactory::build()</code>
+                assembles module config aggregation (via ModuleManager), route matching (via Route),
+                an HTTP container (via Http), and Whoops error handling into an
+                <code>Application</code> instance. Calling <code>run()</code> dispatches the view,
+                matches the route, instantiates the controller, calls the action, and renders the
+                layout template — including a 404 path when no route matches. Pipeline properties
+                (<code>matchRoute</code>, <code>controllerName</code>, <code>actionName</code>, etc.)
+                are exposed via read-only PHP 8.5 property hooks.
+                <a href="https://github.com/jinexus-framework/jinexus-mvc" target="_blank">Head to the GitHub page.</a>
+            </p>
+
+            <h3 id="skeleton">Skeleton</h3>
+            <p>
+                <code>jinexus-framework/jinexus-framework-skeleton</code> is the official starter
+                application. Use <code>composer create-project</code> to scaffold a new project with
+                a pre-configured directory layout: <code>Application\Module</code>, an
+                <code>IndexController</code> with a default <code>indexAction()</code>, route
+                definitions, layout/error view templates, and a PHPUnit test suite. It is the
+                recommended starting point for any new JiNexus project.
+                <a href="https://github.com/jinexus-framework/jinexus-framework-skeleton" target="_blank">Head to the GitHub page.</a>
             </p>
 
             <h2 id="community">Community</h2>
             <p>Stay up to date on the development of JiNexus Framework and reach out to the community with these helpful resources.</p>
 
             <ul>
-                <li>Follow <a href="https://twitter.com/JiNexus" target="_blank">@JiNexus on Twitter</a>.</li>
-                <li>Read and subscribe to <a href="javascript:void(0);" target="_blank">The Official JiNexus Framework Blog</a>. <span class="badge badge-success">Soon!</span></li>
-                <li>Join <a href="javascript:void(0);" target="_blank">the official Slack room</a>. <span class="badge badge-success">Soon!</span></li>
-                <li>My <a href="http://cv.jinexus.com" target="_blank">Curriculum Vitae</a>.</li>
+                <li>Follow <a href="https://x.com/JiNexus" target="_blank">@JiNexus on X</a>.</li>
+                <li>My <a href="https://cv.jinexus.com" target="_blank">Curriculum Vitae</a>.</li>
+                <li>Read and subscribe to my <a href="https://cv.jinexus.com/blog" target="_blank">Blog</a>.</li>
             </ul>
 
             <?php echo $this->render('application/documentation/partial/note'); ?>

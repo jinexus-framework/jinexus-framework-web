@@ -2,14 +2,14 @@
     <!--<form class="jf-search d-flex align-items-center">
         <input type="search" class="form-control" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
         <button class="btn btn-link bd-search-docs-toggle d-md-none p-0 ml-3" type="button" data-toggle="collapse" data-target="#bd-docs-nav" aria-controls="bd-docs-nav" aria-expanded="false" aria-label="Toggle docs navigation">
-            <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30" focusable="false">
+            <svg xmlns="https://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30" focusable="false">
                 <title>Menu</title>
                 <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M4 7h22M4 15h22M4 23h22"/>
             </svg>
         </button>
     </form>-->
     <button class="btn btn-link bd-search-docs-toggle d-md-none p-0 ml-3" type="button" data-toggle="collapse" data-target="#bd-docs-nav" aria-controls="bd-docs-nav" aria-expanded="false" aria-label="Toggle docs navigation">
-        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30" focusable="false">
+        <svg xmlns="https://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30" focusable="false">
             <title>Menu</title>
             <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M4 7h22M4 15h22M4 23h22"/>
         </svg>
@@ -57,9 +57,9 @@
                         Route
                     </a>
                 </li>
-                <li class="<?php echo (isset($this->mainSidebar['active']) && in_array('http-request', $this->mainSidebar['active'])) ? 'active bd-sidenav-active' : ''; ?>">
-                    <a href="<?php echo $this->url('application.documentation.walkthrough.http-request'); ?>">
-                        Http Request
+                <li class="<?php echo (isset($this->mainSidebar['active']) && in_array('http', $this->mainSidebar['active'])) ? 'active bd-sidenav-active' : ''; ?>">
+                    <a href="<?php echo $this->url('application.documentation.walkthrough.http'); ?>">
+                        Http
                     </a>
                 </li>
                 <li class="<?php echo (isset($this->mainSidebar['active']) && in_array('view', $this->mainSidebar['active'])) ? 'active bd-sidenav-active' : ''; ?>">

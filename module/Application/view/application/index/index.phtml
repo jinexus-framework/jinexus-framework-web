@@ -1,7 +1,5 @@
 <main class="bd-masthead space stars" id="content" role="main">
-    <a href="https://github.com/jinexus-framework" target="_blank">
-        <img style="position: absolute; top: 0; right: 0; border: 0;" src="<?php echo $this->basePath('asset/img/fork-me/fork-me-right-white-ffffff.webp'); ?>" alt="Fork me on GitHub">
-    </a>
+    <?php echo $this->render('layout/partial/fork-me-on-github-ribbon'); ?>
     <?php echo $this->render('layout/partial/stars'); ?>
     <div class="container">
         <div class="row align-items-center">
@@ -11,20 +9,20 @@
             <div class="col-12 col-md-7 order-md-1 text-center text-md-left pr-md-5">
                 <h1 class="mb-3 text-primary text-shadow">JiNexus Framework</h1>
                 <p class="lead text-light text-shadow">
-                    A modular, lightweight and easy to use PHP framework and probably the smallest and fastest MVC framework that you will ever use.
+                    A modular PHP MVC framework — minimal, modern, and built for clarity.
                 </p>
                 <p class="lead text-light text-shadow">
-                    When it comes to any frameworks one is forced to choose not the best one, but the least evil.
+                    Less magic. More PHP. No compromises.
                 </p>
                 <p class="lead mb-4 text-light text-shadow">
-                    Get started with JiNexus Framework by checking its documentation. This will give you the idea on how easy to set things all up.
+                    Dive into the docs and see how easy it is to get started.
                 </p>
                 <div class="d-flex flex-column flex-md-row lead mb-3">
                     <a href="<?php echo $this->url('application.documentation'); ?>" class="btn btn-lg btn-outline-primary mb-3 mb-md-0 mr-md-3 text-shadow"><i class="fas fa-chevron-circle-right"></i> Get started</a>
                     <a href="https://github.com/jinexus-framework/jinexus-framework-skeleton" class="btn btn-lg btn-outline-secondary text-shadow" target="_blank"><i class="fab fa-github"></i> Fork me on GitHub</a>
                 </div>
                 <p class="text-muted mb-0 text-shadow">
-                    Current Version 1.0.0
+                    Current Version 1.1.0
                 </p>
             </div>
         </div>
@@ -32,7 +30,7 @@
 </main>
 <div class="masthead-followup row m-0 border border-white">
     <div class="col-12 col-md-4 p-3 p-md-5 bg-light border border-white">
-        <svg xmlns="http://www.w3.org/2000/svg" focusable="false" width="32" height="32" fill="none" stroke="currentcolor" stroke-width="2" class="text-primary mb-2" viewBox="0 0 32 32" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="https://www.w3.org/2000/svg" focusable="false" width="32" height="32" fill="none" stroke="currentcolor" stroke-width="2" class="text-primary mb-2" viewBox="0 0 32 32" stroke-linecap="round" stroke-linejoin="round">
             <title>Import icon</title>
             <path d="M28 22v8H4v-8M16 4v20m-8-8l8 8 8-8"/>
         </svg>
@@ -45,10 +43,10 @@
         <p class="lead">All you have to do — to create your new JiNexus Framework project is to run this one single line command:</p>
         <figure class="highlight"><pre><code class="language-sh" data-lang="sh">composer create-project jinexus-framework/jinexus-framework-skeleton path/to/install</code></pre></figure>
         <hr class="half-rule">
-        <a class="btn btn-outline-primary" href="#">Read Installation Docs</a>
+        <a class="btn btn-outline-primary" href="<?php echo $this->url('application.documentation.getting-started.installation'); ?>">Read Installation Docs</a>
     </div>
     <div class="col-12 col-md-4 p-3 p-md-5 bg-light border border-white">
-        <svg xmlns="http://www.w3.org/2000/svg" focusable="false" width="32" height="32" fill="none" stroke="currentcolor" stroke-width="2" class="text-primary mb-2" viewBox="0 0 32 32" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="https://www.w3.org/2000/svg" focusable="false" width="32" height="32" fill="none" stroke="currentcolor" stroke-width="2" class="text-primary mb-2" viewBox="0 0 32 32" stroke-linecap="round" stroke-linejoin="round">
             <title>Book icon</title>
             <path d="M10 9 L3 17 10 25 M22 9 L29 17 22 25 M18 7 L14 27" />
         </svg>
@@ -60,13 +58,13 @@
         <a href="<?php echo $this->url('application.about.conduct'); ?>" class="btn btn-outline-primary">Code of Conduct</a>
     </div>
     <div class="col-12 col-md-4 p-3 p-md-5 bg-light border border-white">
-        <svg xmlns="http://www.w3.org/2000/svg" focusable="false" width="32" height="32" fill="none" stroke="currentcolor" stroke-width="2" class="text-primary mb-2" viewBox="0 0 32 32" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="https://www.w3.org/2000/svg" focusable="false" width="32" height="32" fill="none" stroke="currentcolor" stroke-width="2" class="text-primary mb-2" viewBox="0 0 32 32" stroke-linecap="round" stroke-linejoin="round">
             <title>Book icon</title>
             <path d="M16 7 C16 7 9 1 2 6 L2 28 C9 23 16 28 16 28 16 28 23 23 30 28 L30 6 C23 1 16 7 16 7 Z M16 7 L16 28" />
         </svg>
         <h2>Documentation</h2>
-        <p class="lead">Learning a new framework is hard, JiNexus Framework provides a simple abstract and semantic interface to help developers understand this framework.</p>
-        <p class="lead">Well documented source code makes it easy to understand what's going on. Go and get started to explore our docs.</p>
+        <p class="lead">Learning a new framework is hard; JiNexus Framework provides a simple abstract and semantic interface to help developers understand this framework.</p>
+        <p class="lead">Well-documented source code makes it easy to understand what's going on. Go and get started to explore our docs.</p>
 
         <hr class="half-rule">
         <a class="btn btn-outline-primary" href="<?php echo $this->url('application.documentation'); ?>">Explore the Docs</a>

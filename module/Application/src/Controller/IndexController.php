@@ -1,8 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Application\Controller;
 
 use JiNexus\Mvc\Controller\AbstractController;
 use JiNexus\Mvc\Model\ViewModel;
+use JiNexus\Route\RouteException;
 
 /**
  * Class IndexController
@@ -12,11 +16,11 @@ class IndexController extends AbstractController
 {
     /**
      * @return ViewModel
-     * @throws \JiNexus\Route\Exception
+     * @throws RouteException
      */
-    public function indexAction()
+    public function indexAction(): ViewModel
     {
-        $request = $this->http->getRequest();
+        $request = $this->request;
 
         return new ViewModel([
             'title' => 'JiNexus Framework',
